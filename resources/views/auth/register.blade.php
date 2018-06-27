@@ -8,18 +8,22 @@
                 <div class="panel-heading">Cadastrar</div>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('register') }}">
+                    <form class="form-horizontal" method="POST" action="{{ url('usuario') }}">
                         {{ csrf_field() }}
 
-                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                            <label for="name" class="col-md-4 control-label">Nome</label>
+                        <div class="form-group{{ $errors->has('colaborador_id') ? ' has-error' : '' }}">
+                            <label for="colaborador_id" class="col-md-4 control-label">Nome</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus>
+                                <select id="colaborador_id" class="form-control" name="colaborador_id" value="{{ old('colaborador_id') }}" required autofocus>
+                                    @foreach($colaboradores as $colaborador)
+                                        <option value="{{$colaborador->id}}">{{$colaborador->nome}}</option>
+                                    @endforeach
+                                </select>
 
-                                @if ($errors->has('name'))
+                                @if ($errors->has('colaborador_id'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('name') }}</strong>
+                                        <strong>{{ $errors->first('colaborador_id') }}</strong>
                                     </span>
                                 @endif
                             </div>

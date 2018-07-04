@@ -54,9 +54,9 @@
                                 @foreach($leitosSuperiores as $leito)                                    
                                     @if($leito->status == 1)
                                         @if($leito->hospede_id == NULL)
-                                            <td><a href="{{ url('/leito/' . $leito->id) }}"><div style="width: 20px; height: 50px; background-color: green"></div></a></td>
+                                            <td><a data-toggle="tooltip" data-placement="top" title="Livre" href="{{ url('/leito/' . $leito->id) }}"><div style="width: 20px; height: 50px; background-color: green"></div></a></td>
                                         @else
-                                            <td><a href="{{ url('/leito/' . $leito->id) }}"><div style="width: 20px; height: 50px; background-color: red"></div></a></td>
+                                            <td><a data-toggle="tooltip" data-placement="top" title="{{ $leito->hospede->nome }} - {{ $leito->hospede->cargo }}" href="{{ url('/leito/' . $leito->id) }}"><div style="width: 20px; height: 50px; background-color: red"></div></a></td>
                                         @endif
                                     @else
                                         <td><div style="width: 20px; height: 50px; background-color: lightgray"></div></td>

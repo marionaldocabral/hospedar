@@ -30,8 +30,6 @@ class HomeController extends Controller
             ['status', 1],
         ])->count();
         $qtdLeitosOcupados = Leito::whereNotNull('hospede_id')->count();
-        $leitosSuperiores = Leito::whereIn('id', [1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49])->get();
-        $leitosInferiores = Leito::whereIn('id', [2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50])->get();
         $leitos = Leito::all();
         $adm = 0;
         $anc = 0;
@@ -44,9 +42,10 @@ class HomeController extends Controller
         $org = 0;
         $out = 0;
 
-        foreach ($leitos as $leito) {
+        foreach ($leitos as &$leito) {
             if(!is_null($leito->hospede_id)){
                 $hospede = Hospede::findOrFail($leito->hospede_id);
+                $leito->setAttribute('hospede', $hospede);
                 if($hospede->cargo == 'Administrador')
                     $adm++;
                 else if($hospede->cargo == 'Ancião')
@@ -67,6 +66,12 @@ class HomeController extends Controller
                     $org++;
                 else if($hospede->cargo == 'Outro')
                     $out++;
+            }
+            
+            if($leito->id % 2) {
+                $leitosSuperiores[] = $leito;
+            } else {
+                $leitosInferiores[] = $leito;
             }
             
         }

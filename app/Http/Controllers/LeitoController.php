@@ -40,18 +40,19 @@ class LeitoController extends Controller
     public function create()
     {
          $leitos = Leito::where('status','1')->get();
-         if(sizeof($leitos) < 50){
-            $indice1 = sizeof($leitos) + 1;
-            $indice2 = sizeof($leitos) + 2;
-            $leito1 = Leito::findOrfail($indice1);
-            $leito2 = Leito::findOrfail($indice2);
-            $leito1->status = 1;
-            $leito2->status = 1;
-            $leito1->save();
-            $leito2->save();
-            return redirect('leito')->with('success', 'Leitos adicionados com sucesso!');
-         }
-        return redirect('leito')->with('success', 'Limite atingido. Não é possível adicionar mais leitos!');
+         $indice1 = sizeof($leitos) + 1;
+         $indice2 = sizeof($leitos) + 2;
+         $leito1 = Leito::where('id', $indice1)->first();
+         $leito2 = Leito::where('id', $indice2)->first();
+         if(sizeof($leito1) == 0)
+            $leito1 = new Leito();
+         if(sizeof($leito2) == 0)
+            $leito2 = new Leito();
+         $leito1->status = 1;
+         $leito2->status = 1;
+         $leito1->save();
+         $leito2->save();
+         return redirect('leito')->with('success', 'Leitos adicionados com sucesso!');
     }
 
     public function remove()
@@ -85,42 +86,13 @@ class LeitoController extends Controller
 
             if(!is_null($movimentacao)){
                 $data = $movimentacao->data;
-
-                $dia =  substr($data,0,2);
-                $mes =  substr($data,3,2);
-                $ano =  substr($data,6,9);
-                $diasemana = date("w", mktime(0,0,0,$mes,$dia,$ano) );
-                switch($diasemana){
-                    case"0":
-                        $diasemana = "Domingo";
-                        break;
-                    case"1":
-                        $diasemana = "Segunda-Feira";
-                        break;
-                    case"2":
-                        $diasemana = "Terça-Feira";
-                        break;
-                    case"3":
-                        $diasemana = "Quarta-Feira";
-                        break;
-                    case"4":
-                        $diasemana = "Quinta-Feira";
-                         break;
-                    case"5":
-                        $diasemana = "Sexta-Feira";
-                        break;
-                    case"6": $diasemana = "Sábado";
-                        break;
-                }
-
+                $diasemana = $this->dia_da_semana($data);
+                $data = str_replace('-','/',$data);
                 $chegada = $diasemana . ', ' . $data . ', ' . $movimentacao->hora . 'h.';
             }
             else{
                 $chegada = NULL;
             }
-
-            
-
             return view('leito.show', compact('leito', 'hospede', 'chegada'));
         }
         else{
@@ -148,12 +120,18 @@ class LeitoController extends Controller
 
     public function hospedar($leito_id, $hospede_id)
     {
+        $msg;
         //liberando o leito caso já esteja hospedado
-        $leitos = Leito::where('hospede_id', $hospede_id)->get();
-        foreach ($leitos as $leito) {
-            $leito->hospede_id = NULL;
-            $leito->save();
+        $leitoAtual = Leito::where('hospede_id', $hospede_id)->first();
+        if(sizeof($leitoAtual) != 0){
+            $leitoAtual->hospede_id = NULL;
+            $leitoAtual->save();
+            $msg = 'Leito atualizado com sucesso!';
         }
+        else{
+            $msg = 'Hospedagem realizada com sucesso!';
+        }
+
         //hospedando
         $leito = Leito::findOrfail($leito_id);
         $leito->hospede_id = $hospede_id;
@@ -168,7 +146,7 @@ class LeitoController extends Controller
         $movimentacao->hospede_id = $hospede_id;
         $movimentacao->save();
         
-        return redirect('home')->with('success', 'Hospedagem realizada com sucesso!');
+        return redirect('home')->with('success', $msg);
     }
 
     public function liberar($leito_id, $hospede_id)
@@ -187,6 +165,66 @@ class LeitoController extends Controller
         $movimentacao->save();
 
         return redirect('home')->with('success', 'Leito liberado com sucesso!');
+    }
+
+    public function alocar($leito_id, $hospede_id){
+        $leito = Leito::findOrfail($leito_id);
+        $hospede = Hospede::findOrfail($hospede_id);
+        //verifica se o hóspede já está hospedado
+        $eHospede = false;
+        $leitos = Leito::all();
+        foreach ($leitos as $l) {
+            if($l->hospede_id == $hospede_id){
+               $eHospede = true;
+               break;
+            }
+        }
+        if($eHospede){
+            $movimentacao = Movimentacao::where([
+                ['hospede_id',$hospede->id],
+                ['tipo','chegada'],
+            ])->get()->last();
+            $data = $movimentacao->data;
+            $diasemana = $this->dia_da_semana($data);
+            $data = str_replace('-','/',$data);
+            $chegada = $diasemana . ', ' . $data . ', ' . $movimentacao->hora . 'h.';
+        }
+        else{
+            $chegada = NULL;
+        }
+ 
+        return view('leito.alocar', compact('leito', 'hospede', 'chegada'));
+    }
+
+    public function dia_da_semana($data)
+    {
+        $dia =  substr($data,0,2);
+        $mes =  substr($data,3,2);
+        $ano =  substr($data,6,9);
+        $diasemana = date("w", mktime(0,0,0,$mes,$dia,$ano) );
+        switch($diasemana){
+            case"0":
+                $diasemana = "Domingo";
+                break;
+            case"1":
+                $diasemana = "Segunda-Feira";
+                break;
+            case"2":
+                $diasemana = "Terça-Feira";
+                break;
+            case"3":
+                $diasemana = "Quarta-Feira";
+                break;
+            case"4":
+                $diasemana = "Quinta-Feira";
+                 break;
+            case"5":
+                $diasemana = "Sexta-Feira";
+                break;
+            case"6": $diasemana = "Sábado";
+                break;
+        }
+        return $diasemana;
     }
 
 }

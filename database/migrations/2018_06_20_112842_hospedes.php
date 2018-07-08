@@ -22,7 +22,7 @@ class Hospedes extends Migration
 
         $table->increments('id');
         
-        $table->String('codigo')->unique();
+        $table->String('codigo');
         
         $table->String('nome');
         

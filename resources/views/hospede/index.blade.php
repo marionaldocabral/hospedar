@@ -79,6 +79,7 @@
                                 @endforeach 
                             </tbody>
                         </table>
+                        {!! $hospedes->render() !!}
                     </div>
                 </div>
             </div>

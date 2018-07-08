@@ -15,7 +15,7 @@ class UserController extends Controller
     }
 
     public function index(){
-        $users = User::all();
+        $users = User::orderBy('email')->paginate(8);
         $colaboradores = DB::table('colaboradors')
                 ->whereNotNull('user_id')
                 ->get();

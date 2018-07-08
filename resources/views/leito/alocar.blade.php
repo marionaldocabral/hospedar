@@ -31,22 +31,24 @@
                                     <th class="col-md-2"> Telefone </th><td class="col-md-10"> - </td>
                                 @endif
                             </tr>
-                            <tr>
-                                <th class="col-md-2"> Chegada </th><td class="col-md-10"> {!!$chegada!!} </td>
-                            </tr>
+                            @if($chegada != NULL)
+                                <tr>
+                                    <th class="col-md-2"> Chegada </th><td class="col-md-10"> {!!$chegada!!} </td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
-                    <form method="POST" action="{{ url('/leito/' . $leito->id . '/hospede/' . $hospede->id . '/liberar') }}" accept-charset="UTF-8" enctype="multipart/form-data">
+                    <form method="POST" action="{{ url('/leito/' . $leito->id . '/hospede/' . $hospede->id . '/hospedar') }}" accept-charset="UTF-8" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="form-group" style="margin-top: 6px;">
                              <div class="pull-left">
-                                <button class="btn btn-danger" type="submit" onclick="return confirm(&quot;Deseja liberar o leito?&quot;)">
-                                    <i class="fa fa-trash-o" aria-hidden="true"></i> Liberar
+                                <button class="btn btn-success" type="submit">
+                                    <i class="fa fa-check" aria-hidden="true"></i> Salvar
                                 </button>
                             </div>
                             <div class="pull-right">
-                                <a href="{{ url('/home') }}" class="btn btn-warning">
-                                    <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar
+                                <a href="{{ url('/home') }}" class="btn btn-danger">
+                                    <i class="fa fa-ban" aria-hidden="true"></i> Cancelar
                                 </a>
                             </div>
                         </div>

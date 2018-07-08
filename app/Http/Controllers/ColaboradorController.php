@@ -20,7 +20,7 @@ class ColaboradorController extends Controller
 
     public function index()
     {
-        $colaboradors = Colaborador::all();
+        $colaboradors = Colaborador::orderBy('nome')->paginate(8);
         return view('colaborador.index',compact('colaboradors'));
     }
 

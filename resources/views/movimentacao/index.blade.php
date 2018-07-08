@@ -46,6 +46,7 @@
                                 @endforeach 
                             </tbody>
                         </table>
+                        {!! $movimentacaos->render() !!}
                     </div>
                 </div>
             </div>

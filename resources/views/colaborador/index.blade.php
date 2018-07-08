@@ -57,6 +57,7 @@
                                 @endforeach 
                             </tbody>
                         </table>
+                        {!! $colaboradors->render() !!}
                     </div>
                 </div>
             </div>

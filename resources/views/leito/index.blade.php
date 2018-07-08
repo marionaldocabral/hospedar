@@ -10,18 +10,20 @@
                     @include('admin.info')
                     <div class="form-group">
                         <div class="pull-left">
-                            <a href="{{ url('/leito/remove') }}" class="btn btn-danger" title="Remover beliche">
-                                <i class="fa fa-minus" aria-hidden="true"></i> 2
-                            </a>
-                            <a href="{{ url('/leito/create') }}" class="btn btn-success" title="Adicionar beliche">
-                                <i class="fa fa-plus" aria-hidden="true"></i> 2
-                            </a>
-                            <button type="button" class="btn btn-info" id="btn-hidden" style="margin-left: 10px" title="Ocultar livres"><i class="fa fa-eye-slash" id="eye"></i></button>
+                            
+                            <input type="checkbox" id="todos" style="margin-left: 10px" checked> Todos
+                            <!--<button type="button" class="btn" id="btn-hidden" style="margin-left: 10px" title="Ocultar livres"><i class="fa fa-eye-slash" id="eye"></i></button>-->
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="pull-right">
-                            <a href="{{ url('/home') }}" class="btn btn-warning" title="Home">
+                            <a href="{{ url('/leito/remove') }}" class="btn btn-danger" title="Remover beliche">
+                                <i class="fa fa-minus" aria-hidden="true"></i>
+                            </a>
+                            <a href="{{ url('/leito/create') }}" class="btn btn-success" title="Adicionar beliche">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </a>
+                            <a href="{{ url('/home') }}" class="btn btn-warning" title="Home" style="margin-left: 20px">
                                 <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar
                             </a>
                         </div>
@@ -81,17 +83,8 @@
         </div>
         <script>
             $(document).ready(function(){
-                $('#btn-hidden').click(function(){
+                $('#todos').click(function(){
                     $('.leitovazio').toggle();
-                    $('#eye').toggleClass('fa-eye-slash');
-                    $('#eye').toggleClass('fa-eye');
-                    if($('#btn-hidden').attr('title') == 'Ocultar livres'){
-                        $('#btn-hidden').attr('title', 'Mostrar livres');
-                    }
-                    else{
-                        $('#btn-hidden').attr('title', 'Ocultar livres');
-                    }
-
                 });
             });
         </script>

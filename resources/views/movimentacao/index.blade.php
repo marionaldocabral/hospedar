@@ -11,7 +11,7 @@
                     <div class="form-group">
                         <div class="pull-left">
                             <input type="checkbox" id="chegada" style="margin-left: 10px" checked>Chegada
-                            <input type="checkbox" id="partida" style="margin-left: 5px" checked>Partida 
+                            <input type="checkbox" id="partida"  style="margin-left: 5px" checked>Partida 
                         </div>
                         <div class="pull-right">
                             <a href="{{ url('/home') }}" class="btn btn-warning" title="Home">

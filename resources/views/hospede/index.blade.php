@@ -18,12 +18,12 @@
                     @include('admin.info')
                     <div class="form-group">
                         <div class="pull-left">
-                            <a href="{{ url('/hospede/create') }}" class="btn btn-success">
+                            <a href="{{ url('/hospede/create') }}" class="btn btn-success" title="Cadastrar hóspede">
                                 <i class="fa fa-plus" aria-hidden="true"></i> Novo
                             </a>
                         </div>
                         <div class="pull-right">
-                            <a href="{{ url('/home') }}" class="btn btn-warning">
+                            <a href="{{ url('/home') }}" class="btn btn-warning" title="Home">
                                 <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar
                             </a>
                         </div>

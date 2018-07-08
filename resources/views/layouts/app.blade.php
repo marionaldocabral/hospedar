@@ -8,6 +8,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+
     <title>Hospedar</title>
 
     <!-- Fonts -->
@@ -59,11 +61,12 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
-                                    <li><a href="{{ url('/usuario') }}">Usuários</a></li>
                                     <li><a href="{{ url('/colaborador') }}">Colaboradores</a></li>
                                     <li><a href="{{ url('/hospede') }}">Hóspedes</a></li>
                                     <li><a href="{{ url('/leito') }}">Leitos</a></li>
                                     <li><a href="{{ url('/movimentacao') }}">Movimentacão</a></li>
+                                    <li><a href="{{ url('/usuario') }}">Usuários</a></li>
+                                    <li><hr></li>
                                     <li>
                                         <a href="{{ route('logout') }}"
                                             onclick="event.preventDefault();

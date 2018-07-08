@@ -9,8 +9,12 @@
                 <div class="panel-body">
                     @include('admin.info')
                     <div class="form-group">
+                        <div class="pull-left">
+                            <input type="checkbox" id="chegada" style="margin-left: 10px" checked>Chegada
+                            <input type="checkbox" id="partida" style="margin-left: 5px" checked>Partida 
+                        </div>
                         <div class="pull-right">
-                            <a href="{{ url('/home') }}" class="btn btn-warning">
+                            <a href="{{ url('/home') }}" class="btn btn-warning" title="Home">
                                 <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar
                             </a>
                         </div>
@@ -20,6 +24,7 @@
                         <table class="table table-borderless">
                             <thead>
                                 <tr>
+                                    <th>Dia</th>
                                     <th>Data</th>
                                     <th>Hora</th>
                                     <th>Tipo</th>
@@ -30,10 +35,11 @@
                             </thead>
                             <tbody>
                                 @foreach($movimentacaos as $movimentacao)
-                                    <tr>               
+                                    <tr>
+                                        <td>{{$dia[$movimentacao->id]}}</td>               
                                         <td>{!!$movimentacao->data!!}</td>
                                         <td>{!!$movimentacao->hora!!}</td>
-                                        <td>{!!$movimentacao->tipo!!}</td>
+                                        <td class="{{$movimentacao->tipo}}">{!!$movimentacao->tipo!!}</td>
                                         @foreach($hospedes as $hospede)
                                             @if($movimentacao->hospede_id == $hospede->id)
                                                 <td>{!!$hospede->nome!!}</td>
@@ -51,5 +57,15 @@
                 </div>
             </div>
         </div>
+        <script>
+            $(document).ready(function(){
+                $('#chegada').click(function(){
+                    $('.chegada').parent().toggle();
+                });
+                $('#partida').click(function(){
+                    $('.partida').parent().toggle();
+                });
+            });
+        </script>
     </div>
 @endsection

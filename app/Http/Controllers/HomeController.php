@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Leito;
 use App\Hospede;
+use App\Reserva;
+use App\Restricao;
 
 class HomeController extends Controller
 {
@@ -25,12 +27,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $qtdLeitosLivres = Leito::where([
-            ['hospede_id', NULL],
-            ['status', 1],
-        ])->count();
-        $qtdLeitosOcupados = Leito::whereNotNull('hospede_id')->count();
-        $leitos = Leito::all();
+        $qtdLeitosLivres = Leito::where('status', 1)->count();
+        $qtdLeitosReservados = Leito::where('status', 2)->count();
+        $qtdLeitosOcupados = Leito::where('status', 3)->count();
+        
         $adm = 0;
         $anc = 0;
         $cjm = 0;
@@ -42,10 +42,14 @@ class HomeController extends Controller
         $org = 0;
         $out = 0;
 
-        foreach ($leitos as &$leito) {
-            if(!is_null($leito->hospede_id)){
+        $leitos = Leito::whereNotIn('status', [0])->get();
+
+        foreach ($leitos as $leito){            
+            if($leito->status ==  2 || $leito->status ==  3){
                 $hospede = Hospede::findOrFail($leito->hospede_id);
                 $leito->setAttribute('hospede', $hospede);
+            }
+            if($leito->status ==  3){
                 if($hospede->cargo == 'Administrador')
                     $adm++;
                 else if($hospede->cargo == 'Ancião')
@@ -66,14 +70,27 @@ class HomeController extends Controller
                     $org++;
                 else if($hospede->cargo == 'Outro')
                     $out++;
-            }
+
+            }         
             
             if($leito->id % 2) {
                 $leitosSuperiores[] = $leito;
             } else {
                 $leitosInferiores[] = $leito;
-            }
-            
+            }            
+        }
+
+        $diabeticos = 0;
+        $hipertensos = 0;
+        $epileticos = 0;
+        $restricoes = Restricao::all();
+        foreach ($restricoes as $restricao) {
+            if($restricao->tipo == 'Diabetes')
+                $diabeticos++;
+            else if($restricao->tipo == 'Pressão Alta')
+                $hipertensos++;
+            elseif($restricao->tipo == 'Epilepsia')
+                $epileticos++;
         }
 
         return view('home', compact(
@@ -81,6 +98,7 @@ class HomeController extends Controller
             'leitosInferiores',
             'qtdLeitosLivres',
             'qtdLeitosOcupados',
+            'qtdLeitosReservados',
             'adm',
             'anc',
             'cjm',
@@ -90,7 +108,10 @@ class HomeController extends Controller
             'erg',
             'mus',
             'org',
-            'out'
+            'out',
+            'diabeticos',
+            'hipertensos',
+            'epileticos'
         ));
     }
 }

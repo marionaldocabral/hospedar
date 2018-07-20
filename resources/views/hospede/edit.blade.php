@@ -75,6 +75,27 @@
                                 {!! $errors->first('telefone', '<p class="help-block">:message</p>') !!}
                             </div>
                         </div>
+                        <div class="row">
+                            <br>
+                            <label class="col-md-4 control-label">Restrições</label>
+                            <dir class="col-md-12">
+                                @if(sizeof($rest_diabetes) != 0)
+                                    <input type="checkbox" name="diabetes" value="Diabetes" checked>Diabetes
+                                @else
+                                    <input type="checkbox" name="diabetes" value="Diabetes">Diabetes
+                                @endif
+                                @if(sizeof($rest_pressao) != 0)
+                                    <input type="checkbox" name="pressao" value="Pressão Alta" style="margin-left: 15px" checked>Pressão Alta
+                                @else
+                                    <input type="checkbox" name="pressao" value="Pressão Alta" style="margin-left: 15px">Pressão Alta
+                                @endif
+                                @if(sizeof($rest_epilepsia) != 0)
+                                    <input type="checkbox" name="epilepsia" value="Epilepsia" style="margin-left: 15px" checked>Eplepsia
+                                @else
+                                    <input type="checkbox" name="epilepsia" value="Epilepsia" style="margin-left: 15px">Eplepsia
+                                @endif
+                            </dir>                            
+                        </div>
                         <div class="form-group" style="margin-top: 6px;">
                             <div class="pull-left">
                                 <button class="btn btn-success" type="submit">

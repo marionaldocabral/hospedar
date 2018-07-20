@@ -31,21 +31,21 @@ Route::group(['middleware'=> 'web'],function(){
 
 //hospede Routes
 Route::group(['middleware'=> 'web'],function(){
-  Route::get('hospede/{codigo}/busca','\App\Http\Controllers\HospedeController@busca');
   Route::get('leito/{leito_id}/hospede/{hospede_codigo}/create','\App\Http\Controllers\HospedeController@create_aloque');
   Route::post('leito/{leito_id}/hospede/{hospede_codigo}/alocar','\App\Http\Controllers\HospedeController@alocar');
   Route::resource('hospede','\App\Http\Controllers\HospedeController');
 });
 
+
 //leito Routes
 Route::group(['middleware'=> 'web'],function(){
   Route::get('leito/remove','\App\Http\Controllers\LeitoController@remove');
   Route::post('leito/{leito_id}/hospede/{hospede_id}/hospedar','\App\Http\Controllers\LeitoController@hospedar');
+  Route::post('leito/{leito_id}/hospede/{hospede_id}/reservar','\App\Http\Controllers\LeitoController@reservar');
   Route::post('leito/{leito_id}/hospede/{hospede_id}/liberar','\App\Http\Controllers\LeitoController@liberar');
+  Route::post('leito/{leito_id}/hospede/{hospede_id}/confirmar','\App\Http\Controllers\LeitoController@confirmar');
   Route::get('leito/{leito_id}/hospede/{hospede_id}','\App\Http\Controllers\LeitoController@alocar');
   Route::resource('leito','\App\Http\Controllers\LeitoController');
-//  Route::post('leito/{id}/update','\App\Http\Controllers\LeitoController@update');  
-//  Route::get('leito/{id}/deleteMsg','\App\Http\Controllers\LeitoController@DeleteMsg');
 });
 
 //movimentacao Routes
@@ -54,5 +54,16 @@ Route::group(['middleware'=> 'web'],function(){
 });
 
 Route::group(['middleware'=> 'web'],function(){
-  Route::get('reserva/create','\App\Http\Controllers\PreCadastroController@create');
+  Route::get('hospede/{codigo}/busca','\App\Http\Controllers\PedidoReservaController@busca');
+  Route::resource('pedido','\App\Http\Controllers\PedidoReservaController');
+
+  Route::post('reserva/{id}/confirma','\App\Http\Controllers\ReservaController@confirmar');
+  Route::resource('reserva','\App\Http\Controllers\ReservaController');
+});
+//restricao Routes
+Route::group(['middleware'=> 'web'],function(){
+  Route::resource('restricao','\App\Http\Controllers\RestricaoController');
+  Route::post('restricao/{id}/update','\App\Http\Controllers\RestricaoController@update');
+  Route::get('restricao/{id}/delete','\App\Http\Controllers\RestricaoController@destroy');
+  Route::get('restricao/{id}/deleteMsg','\App\Http\Controllers\RestricaoController@DeleteMsg');
 });

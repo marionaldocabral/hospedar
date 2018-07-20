@@ -14,7 +14,7 @@ class AddCollumTableLeito extends Migration
     public function up()
     {
         Schema::table('leitos', function (Blueprint $table) {
-            $table->boolean('status')->default(1);
+            $table->integer('status')->default(1);
         });
     }
 

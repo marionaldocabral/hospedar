@@ -65,6 +65,7 @@
                                     <li><a href="{{ url('/hospede') }}">Hóspedes</a></li>
                                     <li><a href="{{ url('/leito') }}">Leitos</a></li>
                                     <li><a href="{{ url('/movimentacao') }}">Movimentacão</a></li>
+                                    <li><a href="{{ url('/reserva') }}">Reservas</a></li>
                                     <li><a href="{{ url('/usuario') }}">Usuários</a></li>
                                     <li><hr></li>
                                     <li>

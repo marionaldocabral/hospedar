@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Leito;
 use App\Hospede;
 use App\Movimentacao;
+use App\Restricao;
 use Amranidev\Ajaxis\Ajaxis;
 use URL;
 
@@ -21,6 +22,14 @@ class LeitoController extends Controller
 
     public function index()
     {
+        /*
+        * Status possíveis dos leitos
+        * 0. Desativado
+        * 1. Livre
+        * 2. Reservado
+        * 3. Ocupado
+        */
+
         //Checando se foram criados os leitos e criando caso negativo
         $l = Leito::all();
         if(sizeof($l) == 0){
@@ -29,49 +38,62 @@ class LeitoController extends Controller
                 $leito->save();
             }
         }
-        //Buscando as tabelas
-        $leitos = Leito::where('status','1')->get();
+        //Buscando as leitos ativos
+        $leitos = Leito::whereNotIN('status',[0])->get();
+        //buscando demais tabelas
         $hospedes = Hospede::all();
-        $movimentacaos = Movimentacao::all();
 
         return view('leito.index',compact('leitos', 'hospedes', 'movimentacaos'));
     }
 
     public function create()
     {
-         $leitos = Leito::where('status','1')->get();
-         $indice1 = sizeof($leitos) + 1;
-         $indice2 = sizeof($leitos) + 2;
-         $leito1 = Leito::where('id', $indice1)->first();
-         $leito2 = Leito::where('id', $indice2)->first();
-         if(sizeof($leito1) == 0)
-            $leito1 = new Leito();
-         if(sizeof($leito2) == 0)
-            $leito2 = new Leito();
-         $leito1->status = 1;
-         $leito2->status = 1;
-         $leito1->save();
-         $leito2->save();
-         return redirect('leito')->with('success', 'Leitos adicionados com sucesso!');
+        $indice1 = 1;
+        $indice2 = 2;
+        while(true){
+            $leito1 = Leito::where('id', $indice1)->first();
+            $leito2 = Leito::where('id', $indice2)->first();
+            if(sizeof($leito1) == 0 && sizeof($leito2) == 0){
+                $leito1 = new Leito();
+                $leito2 = new Leito();
+                $leito1->status = 1;
+                $leito2->status = 1;
+                $leito1->save();
+                $leito2->save();
+                return redirect('leito')->with('success', 'Leitos adicionados com sucesso!');
+            }
+            if($leito1->status == 0 && $leito2->status == 0){
+                $leito1->status = 1;
+                $leito2->status = 1;
+                $leito1->save();
+                $leito2->save();
+                return redirect('leito')->with('success', 'Leitos adicionados com sucesso!');
+            }
+            $indice1 += 2;
+            $indice2 += 2;                 
+        }
     }
 
     public function remove()
     {
-        $leitos = Leito::where('status','1')->get();
+        $leitos = Leito::all();
         for($i = sizeof($leitos); $i > 0; $i-=2){
             $leito1 = Leito::findOrfail($i);
             $leito2 = Leito::findOrfail($i - 1);
-            if($leito1->hospede_id != NULL || $leito2->hospede_id != NULL){
-                return redirect('leito')->with('success', 'Leitos ocupados. Impossível remover!');
+            if($leito1->status == 3 || $leito2->status == 3){
+                return redirect('leito')->with('success', 'Leito(s) ocupado(s). Impossível remover!');
             }
-            $leito1->status = 0;
-            $leito2->status = 0;
-            $leito1->save();
-            $leito2->save();
-            break;            
+            else if($leito1->status == 2 || $leito2->status == 2){
+                return redirect('leito')->with('success', 'Leito(s) reservado(s). Impossível remover!');
+            }
+            else if($leito1->status == 1 || $leito2->status == 1){
+                $leito1->status = 0;
+                $leito2->status = 0;
+                $leito1->save();
+                $leito2->save();
+                return redirect('leito')->with('success', 'Leitos removidos com sucesso!');
+            }
         }
-        
-        return redirect('leito')->with('success', 'Leitos removidos com sucesso!');
     }
 
     public function show($id)
@@ -84,7 +106,7 @@ class LeitoController extends Controller
                 ['tipo','chegada'],
             ])->get()->last();
 
-            if(!is_null($movimentacao)){
+            if(!is_null($movimentacao) && $leito->status == 3){
                 $data = $movimentacao->data;
                 $diasemana = $this->dia_da_semana($data);
                 $data = str_replace('-','/',$data);
@@ -93,7 +115,8 @@ class LeitoController extends Controller
             else{
                 $chegada = NULL;
             }
-            return view('leito.show', compact('leito', 'hospede', 'chegada'));
+            $restricoes = Restricao::where('hospede_id', $hospede->id)->get();
+            return view('leito.show', compact('leito', 'hospede', 'chegada', 'restricoes'));
         }
         else{
             $hospedes = Hospede::orderBy('nome')->get();
@@ -125,6 +148,7 @@ class LeitoController extends Controller
         $leitoAtual = Leito::where('hospede_id', $hospede_id)->first();
         if(sizeof($leitoAtual) != 0){
             $leitoAtual->hospede_id = NULL;
+            $leitoAtual->status = 1;
             $leitoAtual->save();
             $msg = 'Leito atualizado com sucesso!';
         }
@@ -135,6 +159,7 @@ class LeitoController extends Controller
         //hospedando
         $leito = Leito::findOrfail($leito_id);
         $leito->hospede_id = $hospede_id;
+        $leito->status = 3;
         $leito->save();
 
         date_default_timezone_set('America/Sao_Paulo');
@@ -153,6 +178,7 @@ class LeitoController extends Controller
     {
         $leito = Leito::findOrfail($leito_id);
         $leito->hospede_id = NULL;
+        $leito->status = 1;
         $leito->save();
 
         date_default_timezone_set('America/Sao_Paulo');
@@ -171,19 +197,25 @@ class LeitoController extends Controller
         $leito = Leito::findOrfail($leito_id);
         $hospede = Hospede::findOrfail($hospede_id);
         //verifica se o hóspede já está hospedado
-        $eHospede = false;
-        $leitos = Leito::all();
-        foreach ($leitos as $l) {
-            if($l->hospede_id == $hospede_id){
-               $eHospede = true;
-               break;
+        $eHospede;
+        $leitoOcupado = Leito::where('hospede_id', $hospede_id)->first();
+        if(sizeof($leitoOcupado) > 0){
+            if($leitoOcupado->status == 2){
+                return redirect('leito/' . $leitoOcupado->id);
             }
+            $eHospede['leito'] = $leitoOcupado->id;
+            $eHospede['status'] = true;
         }
-        if($eHospede){
+        else{
+            $eHospede['leito'] = 0;
+            $eHospede['status'] = false;
+        }
+        if($eHospede['status'] == true){
             $movimentacao = Movimentacao::where([
                 ['hospede_id',$hospede->id],
                 ['tipo','chegada'],
             ])->get()->last();
+
             $data = $movimentacao->data;
             $diasemana = $this->dia_da_semana($data);
             $data = str_replace('-','/',$data);
@@ -193,7 +225,7 @@ class LeitoController extends Controller
             $chegada = NULL;
         }
  
-        return view('leito.alocar', compact('leito', 'hospede', 'chegada'));
+        return view('leito.alocar', compact('leito', 'hospede', 'chegada','eHospede'));
     }
 
     public function dia_da_semana($data)
@@ -225,6 +257,31 @@ class LeitoController extends Controller
                 break;
         }
         return $diasemana;
+    }
+
+    public function reservar($leito_id, $hospede_id){
+        $leito = Leito::findOrfail($leito_id);
+        $leito->hospede_id = $hospede_id;
+        $leito->status = 2;
+        $leito->save();
+        return redirect('home')->with('success', 'Leito reservado com sucesso!');
+    }
+
+    public function confirmar($leito_id, $hospede_id){
+        $leito = Leito::findOrfail($leito_id);
+        $leito->status = 3;
+        $leito->save();
+
+        date_default_timezone_set('America/Sao_Paulo');
+
+        $movimentacao = new Movimentacao();
+        $movimentacao->tipo = 'chegada';
+        $movimentacao->data = date('d-m-Y');
+        $movimentacao->hora = date('H:i');
+        $movimentacao->hospede_id = $hospede_id;
+        $movimentacao->save();
+
+        return redirect('home')->with('success', 'Leito atualizado com sucesso!');
     }
 
 }

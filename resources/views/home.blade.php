@@ -9,15 +9,27 @@
         <div class="col-auto">
             <div class="panel panel-default">
                 <div class="panel-heading panel-body">
-                    <div class="pull-left" style="width: 20%;">
+                    <div class="pull-left">
                         <div style="width: 10px; height: 10px; background-color: green; display: inline-flex; margin-right: 3px"></div>
                         @if($qtdLeitosLivres < 10)
-                            {{ 'Leitos Livres: 0' . $qtdLeitosLivres }}
+                            {{ 'Livres: 0' . $qtdLeitosLivres }}
                         @else
-                            {{ 'Leitos Livres: ' . $qtdLeitosLivres }}
+                            {{ 'Livres: ' . $qtdLeitosLivres }}
                         @endif
+                        <div style="width: 10px; height: 10px; background-color: red; display: inline-flex; margin-left: 3px; margin-left: 10px"></div>
+                        @if($qtdLeitosOcupados < 10)
+                            {{ 'Ocupados: 0' . $qtdLeitosOcupados }}
+                        @else
+                            {{ 'Ocupados: ' . $qtdLeitosOcupados }}
+                        @endif
+                        <div style="width: 10px; height: 10px; background-color: #FACC2E; display: inline-flex; margin-right: 3px; margin-left: 10px"></div>
+                        @if($qtdLeitosReservados < 10)
+                            {{ 'Reservas: 0' . $qtdLeitosReservados }}
+                        @else
+                            {{ 'Reservas: ' . $qtdLeitosReservados }}
+                        @endif                        
                     </div>
-                    <div style="display: inline-flex; width: 60%; justify-content: center;">
+                    <div class="pull-right">
                         Adm: {{$adm}} <span style="width: 15px"></span>
                         Anc: {{$anc}} <span style="width: 15px"></span>
                         CJM: {{$cjm}} <span style="width: 15px"></span>
@@ -30,12 +42,8 @@
                         Out: {{$out}}
                     </div>
                     <div class="pull-right" style="width: 20%; text-align: right;">
-                        @if($qtdLeitosOcupados < 10)
-                            {{ 'Leitos Ocupados: 0' . $qtdLeitosOcupados }}
-                        @else
-                            {{ 'Leitos Ocupados: ' . $qtdLeitosOcupados }}
-                        @endif
-                        <div style="width: 10px; height: 10px; background-color: red; display: inline-flex; margin-left: 3px"></div>
+                        
+                        
                     </div>
                 </div>
                 <div class="panel-body">
@@ -43,9 +51,8 @@
                         <table class="table table-borderless">                            
                             <tbody>
                                 <tr>
-                                @foreach($leitosSuperiores as $leito)
-                                    @if($leito->status == 1)
-                                        @if($leito->hospede_id == NULL)
+                                @foreach($leitosSuperiores as $leito)                                    
+                                        @if($leito->status == 1)
                                             <td style="border-top: none">
                                                 <a data-toggle="modal" data-target=".bd-example-modal-sm" data-placement="top" title="Leito Livre" id="{{$leito->id}}" class="leito">
                                                     <div style="width: 22px; height: 60px; background-color: green; color: white; text-align: center;vertical-align: middle; display: table-cell;">
@@ -57,7 +64,19 @@
                                                     </div>
                                                 </a>
                                             </td>
-                                        @else
+                                        @elseif($leito->status == 2)
+                                            <td style="border-top: none">
+                                                <a data-toggle="tooltip" data-placement="top" title="{{ $leito->hospede->nome . ', ' . $leito->hospede->cargo . ' de ' . $leito->hospede->local}}" href="{{ url('/leito/' . $leito->id) }}" id="{{$leito->id}}" class="leito">
+                                                    <div style="width: 22px; height: 60px; background-color: #FACC2E; color: white; text-align: center; vertical-align: middle; display: table-cell;">
+                                                        @if($leito->id < 10)
+                                                            {{ '0' . $leito->id}}
+                                                        @else
+                                                            {{ $leito->id}}
+                                                        @endif                                                    
+                                                    </div>
+                                                </a>
+                                            </td>
+                                        @elseif($leito->status == 3)
                                             <td style="border-top: none">
                                                 <a data-toggle="tooltip" data-placement="top" title="{{ $leito->hospede->nome . ', ' . $leito->hospede->cargo . ' de ' . $leito->hospede->local}}" href="{{ url('/leito/' . $leito->id) }}" id="{{$leito->id}}" class="leito">
                                                     <div style="width: 22px; height: 60px; background-color: red; color: white; text-align: center; vertical-align: middle; display: table-cell;">
@@ -69,8 +88,7 @@
                                                     </div>
                                                 </a>
                                             </td>
-                                        @endif
-                                    @endif
+                                        @endif                                    
                                 @endforeach
                                 </tr> 
                             </tbody>
@@ -78,8 +96,7 @@
                             <tbody>                                
                                 <tr>
                                 @foreach($leitosInferiores as $leito)                                    
-                                    @if($leito->status == 1)
-                                        @if($leito->hospede_id == NULL)
+                                        @if($leito->status == 1)
                                             <td>
                                                 <a data-toggle="modal" data-target=".bd-example-modal-sm" title="Leito Livre" id="{{$leito->id}}" class="leito">
                                                     <div style="width: 22px; height: 60px; background-color: green; color: white; text-align: center; vertical-align: middle; display: table-cell;">
@@ -91,7 +108,19 @@
                                                     </div>
                                                 </a>
                                             </td>
-                                        @else
+                                        @elseif($leito->status == 2)
+                                            <td>
+                                                <a title="{{ $leito->hospede->nome . ', ' . $leito->hospede->cargo . ' de ' . $leito->hospede->local}}" href="{{ url('/leito/' . $leito->id) }}" id="{{$leito->id}}" class="leito">
+                                                    <div style="width: 22px; height: 60px; background-color: #FACC2E; color: white; text-align: center; vertical-align: middle; display: table-cell;">
+                                                        @if($leito->id < 10)
+                                                            {{ '0' . $leito->id}}
+                                                        @else
+                                                            {{ $leito->id}}
+                                                        @endif                                                        
+                                                    </div>
+                                                </a>
+                                            </td>
+                                        @elseif($leito->status == 3)
                                             <td>
                                                 <a title="{{ $leito->hospede->nome . ', ' . $leito->hospede->cargo . ' de ' . $leito->hospede->local}}" href="{{ url('/leito/' . $leito->id) }}" id="{{$leito->id}}" class="leito">
                                                     <div style="width: 22px; height: 60px; background-color: red; color: white; text-align: center; vertical-align: middle; display: table-cell;">
@@ -103,8 +132,7 @@
                                                     </div>
                                                 </a>
                                             </td>
-                                        @endif
-                                    @endif
+                                        @endif                                    
                                 @endforeach
                                 </tr> 
                             </tbody>
@@ -136,6 +164,39 @@
             </div>
           </div>
         </div>
+        <div>
+            <table>
+                <tr style="display: inline">
+                    <th> Diabéticos: </th>
+                    <td style="padding-left: 10px">
+                        @if($diabeticos < 10)
+                            {{'0' . $diabeticos}}
+                        @else
+                            {{$diabeticos}}
+                        @endif
+                    </td>
+                </tr>
+                <tr style="display: inline; margin-left: 20px; margin-right: 5px;">
+                    <th> Hipertensos: </th>
+                    <td style="padding-left: 10px">
+                        @if($hipertensos < 10)
+                            {{'0' . $hipertensos}}
+                        @else
+                            {{$hipertensos}}
+                        @endif
+                    </td>
+                </tr>
+                <tr style="display: inline; margin-left: 20px; margin-right: 5px;">
+                    <th> Epiléticos: </th><td style="padding-left: 10px">
+                        @if($epileticos < 10)
+                            {{'0' . $epileticos}}
+                        @else
+                            {{$epileticos}}
+                        @endif
+                    </td>
+                </tr>
+            </table>
+        </div>
         <script>
             $(document).ready(function(){
                 $('.leito').click(function(){
@@ -144,7 +205,10 @@
                 });
                 $('#bt_procurar').click(function(){
                     if($('#campo_codigo').val() == ''){
-                        alert('Digite o código do cartão de identificação do hóspede.')
+                        alert('Digite o código do cartão de identificação do hóspede!')
+                    }
+                    else if($('#campo_codigo').val().length != 7){
+                        alert('Digite um código válido!')
                     }
                     else if($('#campo_codigo').val() == '0000000'){
                         url = 'leito/' + $('#campo_leito').val() + '/hospede/' + $('#campo_codigo').val() + '/create';
@@ -169,4 +233,3 @@
     </div>
 </div>
 @endsection
-

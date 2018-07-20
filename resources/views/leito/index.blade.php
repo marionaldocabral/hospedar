@@ -10,9 +10,9 @@
                     @include('admin.info')
                     <div class="form-group">
                         <div class="pull-left">
-                            
-                            <input type="checkbox" id="todos" style="margin-left: 10px" checked> Todos
-                            <!--<button type="button" class="btn" id="btn-hidden" style="margin-left: 10px" title="Ocultar livres"><i class="fa fa-eye-slash" id="eye"></i></button>-->
+                            <input type="checkbox" id="livres" style="margin-left: 10px" checked>Livres
+                            <input type="checkbox" id="ocupados" style="margin-left: 10px" checked>Ocupados
+                            <input type="checkbox" id="reservas" style="margin-left: 10px" checked>Reservas
                         </div>
                     </div>
                     <div class="form-group">
@@ -39,13 +39,12 @@
                                     <th>Cargo</th>
                                     <th>Local</th>
                                     <th>Telefone</th>
-                              <!--      <th style="width: 210px !important;">Ações</th> -->
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($leitos as $leito)
                                     <tr>
-                                        @if($leito->hospede_id == NULL)
+                                        @if($leito->status == 1)
                                             @if($leito->id < 10)
                                                 <td class="leitovazio">{!! '0' . $leito->id !!}</td>
                                             @else
@@ -56,20 +55,36 @@
                                             <td class="leitovazio"></td>
                                             <td class="leitovazio"></td>
                                             <td class="leitovazio"></td>
-                                        @else
+                                        @elseif($leito->status == 2)
                                             @if($leito->id < 10)
-                                                <td>{!! '0' . $leito->id !!}</td>
+                                                <td class="leitoreservado">{!! '0' . $leito->id !!}</td>
                                             @else
-                                                <td>{!! $leito->id !!}</td>
+                                                <td class="leitoreservado">{!! $leito->id !!}</td>
                                             @endif
                                             @foreach($hospedes as $hospede)
                                                 @if($hospede->id == $leito->hospede_id)
-                                                    <td>{!!$hospede->codigo!!}</td>
-                                                    <td>{!!$hospede->nome!!}</td>
-                                                    <td>{!!$hospede->cargo!!}</td>
-                                                    <td>{!!$hospede->local!!}</td>
-                                                    <td>{!!$hospede->telefone!!}</td>
+                                                    <td class="leitoreservado" style="color: #FACC2E">{!!$hospede->codigo!!}</td>
+                                                    <td class="leitoreservado" style="color: #FACC2E">{!!$hospede->nome!!}</td>
+                                                    <td class="leitoreservado" style="color: #FACC2E">{!!$hospede->cargo!!}</td>
+                                                    <td class="leitoreservado" style="color: #FACC2E">{!!$hospede->local!!}</td>
+                                                    <td class="leitoreservado" style="color: #FACC2E">{!!$hospede->telefone!!}</td>
                                                     @break
+                                                @endif
+                                            @endforeach
+                                        @elseif($leito->status == 3)
+                                            @if($leito->id < 10)
+                                                <td class="leitoocupado">{!! '0' . $leito->id !!}</td>
+                                            @else
+                                                <td class="leitoocupado">{!! $leito->id !!}</td>
+                                            @endif
+                                            @foreach($hospedes as $hospede)
+                                                @if($hospede->id == $leito->hospede_id)
+                                                    <td class="leitoocupado">{!!$hospede->codigo!!}</td>
+                                                    <td class="leitoocupado">{!!$hospede->nome!!}</td>
+                                                    <td class="leitoocupado">{!!$hospede->cargo!!}</td>
+                                                    <td class="leitoocupado">{!!$hospede->local!!}</td>
+                                                    <td class="leitoocupado">{!!$hospede->telefone!!}</td>
+                                                    @break                                  
                                                 @endif
                                             @endforeach
                                         @endif
@@ -83,8 +98,14 @@
         </div>
         <script>
             $(document).ready(function(){
-                $('#todos').click(function(){
+                $('#livres').click(function(){
                     $('.leitovazio').toggle();
+                });
+                $('#ocupados').click(function(){
+                    $('.leitoocupado').toggle();
+                });
+                $('#reservas').click(function(){
+                    $('.leitoreservado').toggle();
                 });
             });
         </script>

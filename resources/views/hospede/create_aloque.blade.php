@@ -70,6 +70,15 @@
                                 {!! $errors->first('telefone', '<p class="help-block">:message</p>') !!}
                             </div>
                         </div>
+                        <div class="row">
+                            <br>
+                            <label class="col-md-4 control-label">Restrições</label>
+                            <dir class="col-md-12">
+                                <input type="checkbox" name="diabetes" value="Diabetes">Diabetes
+                                <input type="checkbox" name="pressao" value="Pressão Alta" style="margin-left: 15px">Pressão Alta
+                                <input type="checkbox" name="epilepsia" value="Epilepsia" style="margin-left: 15px">Eplepsia                                
+                            </dir>                            
+                        </div>
                         <div class="form-group" style="margin-top: 6px;">
                              <div class="pull-left">
                                 <button class="btn btn-success" type="submit">

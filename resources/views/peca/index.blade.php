@@ -16,7 +16,7 @@
                         @endif
                         <div class="pull-right">
                             @if(isset($leito))
-                                <a href="{{ url('leito/' . $leito->id) }}" class="btn btn-warning" title="Home">
+                                <a href="{{ url('leito/' . $leito->id) }}" class="btn btn-warning" title="Voltar">
                             @else
                                 <a href="{{ url('home') }}" class="btn btn-warning" title="Home">
                             @endif

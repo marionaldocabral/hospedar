@@ -68,6 +68,7 @@ Route::group(['middleware'=> 'web'],function(){
   Route::post('reserva/{id}/confirma','\App\Http\Controllers\ReservaController@confirmar')->middleware('user');
   Route::resource('reserva','\App\Http\Controllers\ReservaController')->middleware('user');
 });
+
 //restricao Routes
 Route::group(['middleware'=> 'web'],function(){
   Route::resource('restricao','\App\Http\Controllers\RestricaoController')->middleware('user');

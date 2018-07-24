@@ -30,6 +30,7 @@
                             <thead>
                                 <tr>
                                     <th>Tipo</th>
+                                    <th>Serviço</th>
                                         @if(!isset($leito))
                                             <th>Nome</th>
                                         @endif
@@ -40,16 +41,22 @@
                                 @foreach($pecas as $peca)
                                 <tr>
                                     <td>{!!$peca->tipo!!}</td>
-                                        @if(!isset($leito))
-                                            @foreach($hospedes as $hospede)
-                                                @if($hospede->id == $peca->hospede_id)
-                                                    <td>{!!$hospede->nome!!}</td>
-                                                @endif
-                                            @endforeach                                        
-                                        @endif
-                                    <td>                                        
-                                        <form method="POST" action="{{ url('peca/' . $peca->id) }}" accept-charset="UTF-8" style="display:inline">
-                                            {{ method_field('DELETE') }}
+                                    <td>{{$peca->servico}}</td>
+                                    @if(!isset($leito))
+                                        @foreach($hospedes as $hospede)
+                                            @if($hospede->id == $peca->hospede_id)
+                                                <td>{!!$hospede->nome!!}</td>
+                                            @endif
+                                        @endforeach                                        
+                                    @endif
+                                    <td> 
+                                        @if(isset($leito))
+                                            <form method="POST" action="{{ url('hospede/' . $leito->hospede_id . '/peca/' . $peca->id . '/remove') }}" accept-charset="UTF-8" style="display:inline">
+                                                
+                                        @else
+                                            <form method="POST" action="{{ url('peca/' . $peca->id) }}" accept-charset="UTF-8" style="display:inline">
+                                                {{ method_field('DELETE') }}
+                                        @endif                                            
                                             {{ csrf_field() }}
                                             <button type="submit" class="btn btn-danger btn-sm" title="Excluir" onclick="return confirm(&quot;Confirma exclusão?&quot;)">
                                                 <i class="fa fa-trash-o" aria-hidden="true"></i>

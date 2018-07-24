@@ -22,6 +22,7 @@ class LeitoController extends Controller
 
     public function index()
     {
+
         /*
         * Status possíveis dos leitos
         * 0. Desativado
@@ -122,23 +123,6 @@ class LeitoController extends Controller
             $hospedes = Hospede::orderBy('nome')->get();
             return view('hospede.index', compact('hospedes', 'id'));
         }        
-    }
-
-    public function edit($id)
-    {
-        $leito = Leito::findOrfail($id);
-        $hospede = Hospede::findOrfail($leito->hospede->id);
-        return view('leito.show',compact('leito', 'hospede'));
-    }
-
-    public function update($id,Request $request)
-    {
-        $leito = Leito::findOrfail($id);
-        $leito->numero = $request->numero;
-        $leito->hospede_id = $request->hospede_id;
-        $leito->save();
-
-        return redirect('leito');
     }
 
     public function hospedar($leito_id, $hospede_id)

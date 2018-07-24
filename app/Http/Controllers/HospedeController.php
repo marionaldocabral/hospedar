@@ -121,13 +121,6 @@ class HospedeController extends Controller
         }        
     }
 
-    public function show($id)
-    {
-        $hospede = Hospede::findOrfail($id);
-        
-        return view('hospede.show',compact('hospede'));
-    }
-
     public function edit($id)
     {        
         $hospede = Hospede::findOrfail($id);

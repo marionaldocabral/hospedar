@@ -50,4 +50,11 @@ class PecaController extends Controller
      	$peca->delete();
         return redirect('peca');
     }
+
+    public function remove($hospede_id, $peca_id)
+    {
+        $peca = Peca::findOrfail($peca_id);
+        $peca->delete();
+        return redirect('hospede/' . $hospede_id . '/peca');
+    }
 }

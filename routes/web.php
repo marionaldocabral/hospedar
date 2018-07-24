@@ -21,31 +21,38 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 //usuario Routes
 Route::group(['middleware'=> 'web'],function(){
-  Route::resource('usuario','\App\Http\Controllers\UserController');
+  Route::resource('usuario','\App\Http\Controllers\UserController')->middleware('user');
 });
 
 //colaborador Routes
 Route::group(['middleware'=> 'web'],function(){
-  Route::resource('colaborador','\App\Http\Controllers\ColaboradorController');
+  Route::resource('colaborador','\App\Http\Controllers\ColaboradorController')->middleware('user');
 });
 
 //hospede Routes
 Route::group(['middleware'=> 'web'],function(){
-  Route::get('leito/{leito_id}/hospede/{hospede_codigo}/create','\App\Http\Controllers\HospedeController@create_aloque');
-  Route::post('leito/{leito_id}/hospede/{hospede_codigo}/alocar','\App\Http\Controllers\HospedeController@alocar');
-  Route::resource('hospede','\App\Http\Controllers\HospedeController');
+  Route::get('hospede','\App\Http\Controllers\HospedeController@index')->middleware('user');
+  Route::get('hospede/create','\App\Http\Controllers\HospedeController@create')->middleware('user');
+  Route::post('hospede','\App\Http\Controllers\HospedeController@store')->middleware('user');
+  Route::get('hospede/{id}/edit','\App\Http\Controllers\HospedeController@edit')->middleware('user');
+  Route::patch('hospede/{id}','\App\Http\Controllers\HospedeController@update')->middleware('user');
+  Route::delete('hospede/{id}','\App\Http\Controllers\HospedeController@destroy')->middleware('user');
+  Route::get('hospede/create','\App\Http\Controllers\HospedeController@create')->middleware('user');
+  Route::get('leito/{leito_id}/hospede/{hospede_codigo}/create','\App\Http\Controllers\HospedeController@create_aloque')->middleware('user');
+  Route::post('leito/{leito_id}/hospede/{hospede_codigo}/alocar','\App\Http\Controllers\HospedeController@alocar')->middleware('user');
 });
 
 
 //leito Routes
 Route::group(['middleware'=> 'web'],function(){
-  Route::get('leito/remove','\App\Http\Controllers\LeitoController@remove');
-  Route::post('leito/{leito_id}/hospede/{hospede_id}/hospedar','\App\Http\Controllers\LeitoController@hospedar');
-  Route::post('leito/{leito_id}/hospede/{hospede_id}/reservar','\App\Http\Controllers\LeitoController@reservar');
-  Route::post('leito/{leito_id}/hospede/{hospede_id}/liberar','\App\Http\Controllers\LeitoController@liberar');
-  Route::post('leito/{leito_id}/hospede/{hospede_id}/confirmar','\App\Http\Controllers\LeitoController@confirmar');
-  Route::get('leito/{leito_id}/hospede/{hospede_id}','\App\Http\Controllers\LeitoController@alocar');
-  Route::resource('leito','\App\Http\Controllers\LeitoController');
+  Route::get('leito','\App\Http\Controllers\LeitoController@index');
+  Route::get('leito/remove','\App\Http\Controllers\LeitoController@remove')->middleware('user');
+  Route::post('leito/{leito_id}/hospede/{hospede_id}/hospedar','\App\Http\Controllers\LeitoController@hospedar')->middleware('user');
+  Route::post('leito/{leito_id}/hospede/{hospede_id}/reservar','\App\Http\Controllers\LeitoController@reservar')->middleware('user');
+  Route::post('leito/{leito_id}/hospede/{hospede_id}/liberar','\App\Http\Controllers\LeitoController@liberar')->middleware('user');
+  Route::post('leito/{leito_id}/hospede/{hospede_id}/confirmar','\App\Http\Controllers\LeitoController@confirmar')->middleware('user');
+  Route::get('leito/{leito_id}/hospede/{hospede_id}','\App\Http\Controllers\LeitoController@alocar')->middleware('user');
+  Route::get('leito/{id}','\App\Http\Controllers\LeitoController@show')->middleware('user');
 });
 
 //movimentacao Routes
@@ -54,26 +61,24 @@ Route::group(['middleware'=> 'web'],function(){
 });
 
 Route::group(['middleware'=> 'web'],function(){
+  //rotas acessadas por hospedes
   Route::get('hospede/{codigo}/busca','\App\Http\Controllers\PedidoReservaController@busca');
   Route::resource('pedido','\App\Http\Controllers\PedidoReservaController');
-
-  Route::post('reserva/{id}/confirma','\App\Http\Controllers\ReservaController@confirmar');
-  Route::resource('reserva','\App\Http\Controllers\ReservaController');
+  //rotas restritas a usuarios logados
+  Route::post('reserva/{id}/confirma','\App\Http\Controllers\ReservaController@confirmar')->middleware('user');
+  Route::resource('reserva','\App\Http\Controllers\ReservaController')->middleware('user');
 });
 //restricao Routes
 Route::group(['middleware'=> 'web'],function(){
-  Route::resource('restricao','\App\Http\Controllers\RestricaoController');
-  Route::post('restricao/{id}/update','\App\Http\Controllers\RestricaoController@update');
-  Route::get('restricao/{id}/delete','\App\Http\Controllers\RestricaoController@destroy');
-  Route::get('restricao/{id}/deleteMsg','\App\Http\Controllers\RestricaoController@DeleteMsg');
+  Route::resource('restricao','\App\Http\Controllers\RestricaoController')->middleware('user');
 });
 
 //peca Routes
 Route::group(['middleware'=> 'web'],function(){
-  Route::get('hospede/{id}/peca','\App\Http\Controllers\PecaController@filter');
-  Route::get('hospede/{id}/peca/create','\App\Http\Controllers\PecaController@create');
-  Route::resource('peca','\App\Http\Controllers\PecaController');
-  Route::post('peca/{id}/update','\App\Http\Controllers\PecaController@update');
-  Route::get('peca/{id}/delete','\App\Http\Controllers\PecaController@destroy');
-  Route::get('peca/{id}/deleteMsg','\App\Http\Controllers\PecaController@DeleteMsg');
+  Route::post('hospede/{hospede_id}/peca/{peca_id}/remove','\App\Http\Controllers\PecaController@remove')->middleware('lav');
+  Route::get('hospede/{id}/peca','\App\Http\Controllers\PecaController@filter')->middleware('lav');
+  Route::get('hospede/{id}/peca/create','\App\Http\Controllers\PecaController@create')->middleware('lav');
+  Route::get('peca','\App\Http\Controllers\PecaController@index')->middleware('lav');
+  Route::post('peca','\App\Http\Controllers\PecaController@store')->middleware('lav');
+  Route::delete('peca/{id}','\App\Http\Controllers\PecaController@destroy')->middleware('lav');
 });

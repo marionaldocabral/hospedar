@@ -18,7 +18,14 @@
                     @endif
                 </div>
             @endif
-            <dir class="panel-body">            
+            <dir class="panel-body">
+                @if($leito->status == 3)
+                    <div class="pull-left">
+                        <a href="{{ url('hospede/' . $leito->hospede_id) . '/peca' }}" class="btn btn-success">
+                            <i class="fa fa-tags" aria-hidden="true"></i> Lavanderia
+                        </a>
+                    </div>
+                @endif
                 <div class="pull-right">
                     <a href="{{ url('/home') }}" class="btn btn-warning">
                         <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar

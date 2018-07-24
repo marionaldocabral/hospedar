@@ -67,3 +67,13 @@ Route::group(['middleware'=> 'web'],function(){
   Route::get('restricao/{id}/delete','\App\Http\Controllers\RestricaoController@destroy');
   Route::get('restricao/{id}/deleteMsg','\App\Http\Controllers\RestricaoController@DeleteMsg');
 });
+
+//peca Routes
+Route::group(['middleware'=> 'web'],function(){
+  Route::get('hospede/{id}/peca','\App\Http\Controllers\PecaController@filter');
+  Route::get('hospede/{id}/peca/create','\App\Http\Controllers\PecaController@create');
+  Route::resource('peca','\App\Http\Controllers\PecaController');
+  Route::post('peca/{id}/update','\App\Http\Controllers\PecaController@update');
+  Route::get('peca/{id}/delete','\App\Http\Controllers\PecaController@destroy');
+  Route::get('peca/{id}/deleteMsg','\App\Http\Controllers\PecaController@DeleteMsg');
+});

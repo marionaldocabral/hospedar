@@ -63,6 +63,7 @@
                                 <ul class="dropdown-menu">
                                     <li><a href="{{ url('/colaborador') }}">Colaboradores</a></li>
                                     <li><a href="{{ url('/hospede') }}">Hóspedes</a></li>
+                                    <li><a href="{{ url('/peca') }}">Lavanderia</a></li>
                                     <li><a href="{{ url('/leito') }}">Leitos</a></li>
                                     <li><a href="{{ url('/movimentacao') }}">Movimentacão</a></li>
                                     <li><a href="{{ url('/reserva') }}">Reservas</a></li>
